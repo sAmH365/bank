@@ -1,5 +1,6 @@
 package shop.mtcoding.bank.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
@@ -13,6 +14,8 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import shop.mtcoding.bank.domain.user.UserEnum;
+import shop.mtcoding.bank.dto.ResponseDto;
+import shop.mtcoding.bank.util.CustomResponseUtil;
 
 @Configuration
 @EnableWebSecurity // 스프링 시큐리티 필터가 스프링 필터체인에 등록이 됨
@@ -39,6 +42,9 @@ public class SecurityConfig {
             .sessionManagement(sessionManagementConfigurer -> sessionManagementConfigurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // jSessionId를 서버쪽에서 관리안하겠다.
             .formLogin(formLoginConfigurer -> formLoginConfigurer.disable()) // react, 앱으로 요청할 예정
             .httpBasic(httpBasicConfigurer -> httpBasicConfigurer.disable()) // httpBasic은 브라우저가 팝업창을 이용해서 사용자 인증을 진행한다.
+            .exceptionHandling(handlingConfigurer -> handlingConfigurer.authenticationEntryPoint((request, response, authException) -> {
+                CustomResponseUtil.unAuthentication(response, "로그인이 필요합니다.");
+            })) // Exception 가로채기
             .authorizeHttpRequests(requestMatcherRegistry ->
                     requestMatcherRegistry
                             .requestMatchers("/api/s/**").authenticated()
