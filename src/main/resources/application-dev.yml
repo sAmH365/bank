@@ -30,4 +30,4 @@ spring:
 
 logging:
   level:
-    shop.mtcoding: DEBUG
+    shop.mtcoding.bank: DEBUG

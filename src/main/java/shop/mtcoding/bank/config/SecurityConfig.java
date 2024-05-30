@@ -1,4 +1,4 @@
-package shop.mtcoding.config;
+package shop.mtcoding.bank.config;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,7 +18,7 @@ import shop.mtcoding.bank.domain.user.UserEnum;
 @EnableWebSecurity // 스프링 시큐리티 필터가 스프링 필터체인에 등록이 됨
 public class SecurityConfig {
 
-    private final Logger log = LoggerFactory.getLogger(getClass());
+    private final Logger log = LoggerFactory.getLogger(SecurityConfig.class);
 
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
@@ -31,6 +31,7 @@ public class SecurityConfig {
     // JWT 서버 -> 세션 사용 안함
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        log.debug("디버그 : filterChain 빈 등록됨");
         http
             .headers(httpSecurityHeadersConfigurer -> httpSecurityHeadersConfigurer.frameOptions(frameOptionsConfig -> frameOptionsConfig.disable())) // iframe 허용안함
             .csrf(csrfConfigurer -> csrfConfigurer.disable()) // enable이면 포스트맨 작동안함, csrf: 권한을 도용당한 클라이언트가 가짜 요청을 서버에 전송
@@ -42,12 +43,14 @@ public class SecurityConfig {
                     requestMatcherRegistry
                             .requestMatchers("/api/s/**").authenticated()
                             .requestMatchers("/api/admin/**").hasRole(UserEnum.ADMIN.getValue())
+                            .anyRequest().permitAll()
             );
 
         return http.build();
     }
 
     public CorsConfigurationSource configurationSource() {
+        log.debug("디버그 : cors설정이 SecurityFilterChain에 등록됨");
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.addAllowedHeader("*");
         configuration.addAllowedMethod("*"); // GET, POST, PUT, DELETE 등 javascript 요청 허용
