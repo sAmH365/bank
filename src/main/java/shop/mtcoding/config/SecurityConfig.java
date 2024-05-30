@@ -26,7 +26,7 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
-    // JWT 필터 등록이 필요함
+    // JWT 필터 등록이 필요정
 
     // JWT 서버 -> 세션 사용 안함
     @Bean
