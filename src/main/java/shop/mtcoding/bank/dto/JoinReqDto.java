@@ -10,17 +10,15 @@ import shop.mtcoding.bank.domain.user.UserEnum;
 
 @Getter
 @Setter
-@RequiredArgsConstructor
 public class JoinReqDto {
-
-    private final BCryptPasswordEncoder passwordEncoder;
-
     private String username;
     private String password;
     private String email;
     private String fullName;
 
     public User toEntity() {
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+
         return User.builder()
                 .username(username)
                 .password(passwordEncoder.encode(password))
