@@ -130,4 +130,73 @@ public class Regxtest {
     }
 
     // username, email, fullname
+
+    @Test
+    void user_username_test() {
+        String username1 = "user1";
+        String username2 = "유저us1";
+        String username3 = "asg ";
+        String username4 = "가나다";
+        String username5 = "asgdgasdgasdgagdsgadsgasgasgsdgagdgs";
+        String username6 = "a";
+        String username7 = "user";
+
+        String pattern = "^[0-9a-zA-Z]{2,20}$"; // 영어 + 숫자 (2 ~ 20자)
+
+        boolean result1 = Pattern.matches(pattern, username1);
+        boolean result2 = Pattern.matches(pattern, username2);
+        boolean result3 = Pattern.matches(pattern, username3);
+        boolean result4 = Pattern.matches(pattern, username4);
+        boolean result5 = Pattern.matches(pattern, username5);
+        boolean result6 = Pattern.matches(pattern, username6);
+        boolean result7 = Pattern.matches(pattern, username7);
+
+        Assertions.assertThat(result1).isTrue();
+        Assertions.assertThat(result2).isFalse();
+        Assertions.assertThat(result3).isFalse();
+        Assertions.assertThat(result4).isFalse();
+        Assertions.assertThat(result5).isFalse();
+        Assertions.assertThat(result6).isFalse();
+        Assertions.assertThat(result7).isTrue();
+    }
+
+    @Test
+    void user_fullname_test() {
+        String fullname1 = "user1";
+        String fullname2 = "유저us1";
+        String fullname3 = "asg ";
+        String fullname4 = "가나다";
+        String fullname5 = "asgdgasdgasdgagdsgadsgasgasgsdgagdgs";
+        String fullname6 = "a";
+        String fullname7 = "user";
+
+        String pattern = "^[ㄱ-ㅎ가-힣a-zA-Z]{1,20}$"; // 영어 + 한글 (1 ~ 20자)
+
+        boolean result1 = Pattern.matches(pattern, fullname1);
+        boolean result2 = Pattern.matches(pattern, fullname2);
+        boolean result3 = Pattern.matches(pattern, fullname3);
+        boolean result4 = Pattern.matches(pattern, fullname4);
+        boolean result5 = Pattern.matches(pattern, fullname5);
+        boolean result6 = Pattern.matches(pattern, fullname6);
+        boolean result7 = Pattern.matches(pattern, fullname7);
+
+        Assertions.assertThat(result1).isFalse();
+        Assertions.assertThat(result2).isFalse();
+        Assertions.assertThat(result3).isFalse();
+        Assertions.assertThat(result4).isTrue();
+        Assertions.assertThat(result5).isFalse();
+        Assertions.assertThat(result6).isTrue();
+        Assertions.assertThat(result7).isTrue();
+    }
+
+    @Test
+    void user_email_test() {
+        String email = "user1@naver.com";
+
+        String pattern = "^[a-zA-Z0-9+-_.]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+$"; // 이메일
+
+        boolean result1 = Pattern.matches(pattern, email);
+
+        Assertions.assertThat(result1).isTrue();
+    }
 }
