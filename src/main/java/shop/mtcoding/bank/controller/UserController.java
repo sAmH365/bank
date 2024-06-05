@@ -27,9 +27,6 @@ public class UserController {
 
     @PostMapping("/join")
     public ResponseEntity<?> join(@RequestBody @Valid JoinReqDto reqDto, BindingResult bindingResult) {
-
-
-
         JoinResDto joinResDto = userService.joinUser(reqDto);
         return new ResponseEntity<>(new ResponseDto<>(1, "회원가입완료", joinResDto), HttpStatus.CREATED);
     }
