@@ -74,6 +74,9 @@ public class SecurityConfig {
                             .anyRequest().permitAll()
             );
 
+        /**
+         * 참고 문서: https://docs.spring.io/spring-security/reference/servlet/configuration/java.html#jc-custom-dsls
+         */
         http.with(new CustomSecurityFilterManager(), conf -> conf.setFlag(true));
 
         return http.build();
