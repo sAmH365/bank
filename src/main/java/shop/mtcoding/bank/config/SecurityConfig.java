@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -19,6 +20,7 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import shop.mtcoding.bank.config.jwt.JwtAuthenticationFilter;
+import shop.mtcoding.bank.config.jwt.JwtAuthorizationFilter;
 import shop.mtcoding.bank.domain.user.UserEnum;
 import shop.mtcoding.bank.dto.ResponseDto;
 import shop.mtcoding.bank.util.CustomResponseUtil;
@@ -45,6 +47,7 @@ public class SecurityConfig {
         public void configure(HttpSecurity builder) throws Exception {
             AuthenticationManager authenticationManager = builder.getSharedObject(AuthenticationManager.class);
             builder.addFilter(new JwtAuthenticationFilter(authenticationManager));
+            builder.addFilter(new JwtAuthorizationFilter(authenticationManager));
         }
 
         public CustomSecurityFilterManager flag(boolean value) {
@@ -65,8 +68,11 @@ public class SecurityConfig {
             .formLogin(formLoginConfigurer -> formLoginConfigurer.disable()) // react, 앱으로 요청할 예정
             .httpBasic(httpBasicConfigurer -> httpBasicConfigurer.disable()) // httpBasic은 브라우저가 팝업창을 이용해서 사용자 인증을 진행한다.
             .exceptionHandling(handlingConfigurer -> handlingConfigurer.authenticationEntryPoint((request, response, authException) -> {
-                CustomResponseUtil.unAuthentication(response, "로그인이 필요합니다.");
-            })) // Exception 가로채기
+                CustomResponseUtil.fail(response, "로그인이 필요합니다.", HttpStatus.UNAUTHORIZED);
+            })) // 인증실패
+            .exceptionHandling(handlingConfigurer -> handlingConfigurer.accessDeniedHandler((request, response, e) -> {
+                CustomResponseUtil.fail(response, "권한이 없습니다.", HttpStatus.FORBIDDEN);
+            })) // 권한실패
             .authorizeHttpRequests(requestMatcherRegistry ->
                     requestMatcherRegistry
                             .requestMatchers("/api/s/**").authenticated()

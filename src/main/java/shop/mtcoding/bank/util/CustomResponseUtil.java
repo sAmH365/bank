@@ -2,6 +2,7 @@ package shop.mtcoding.bank.util;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.http.HttpStatus;
 import shop.mtcoding.bank.dto.ResponseDto;
 
 import java.io.IOException;
@@ -18,13 +19,13 @@ public class CustomResponseUtil {
         response.getWriter().println(json);
     }
 
-    public static void unAuthentication(HttpServletResponse response, String msg) throws IOException {
+    public static void fail(HttpServletResponse response, String msg, HttpStatus status) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
         ResponseDto<?> responseDto = new ResponseDto<>(-1, msg, null);
         String json = mapper.writeValueAsString(responseDto);
 
         response.setContentType("application/json; charset=utf-8");
-        response.setStatus(401);
+        response.setStatus(status.value());
         response.getWriter().println(json);
     }
 }
